@@ -4,16 +4,12 @@ const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
 const knex = require('knex');
 
-const signIn = require('./controllers/signIn');
-const register = require('./controllers/register');
-const profile = require('./controllers/profile');
-
 const db = knex({
     client: 'pg',
     connection: {
         host: '127.0.0.1',
         user: 'postgres',
-        password: 'pordj55@',
+        password: '',
         database: 'smartbrain'
     }
 });
@@ -33,10 +29,95 @@ app.get('/', (req: any, res: any) => {
     res.send('backend is working');
 });
 
-app.post('/signin', signIn.handleSignIn(db, bcrypt));
+app.post('/signin', (req: any, res: any) => {
+    const { email, password } = req.body;
+    if (!email || !password) {
+        return res.status(400).json('incorrect form submission');
+    }
+    db.select('email', 'hash')
+        .from('login')
+        .where('email', '=', email)
+        .then((data: any) => {
+            const isValid = bcrypt.compareSync(password, data[0].hash);
+            if (isValid) {
+                return db
+                    .select('*')
+                    .from('users')
+                    .where('email', '=', email)
+                    .then((user: any) => {
+                        res.json(user[0]);
+                    })
+                    .catch((err: any) =>
+                        res.status(400).json('unable to get user')
+                    );
+            } else {
+                res.status(400).json('wrong credentials');
+            }
+        })
+        .catch((err: any) => res.status(400).json('wrong credentials'));
+});
 
-app.post('/register', register.handleRegister(db, bcrypt));
+app.post('/register', (req: any, res: any) => {
+    const { email, name, password } = req.body;
+    if (!email || !name || !password) {
+        return res.status(400).json('incorrect form submission');
+    }
+    const hash = bcrypt.hashSync(password);
+    db.transaction((trx: any) => {
+        trx.insert({
+            hash: hash,
+            email: email
+        })
+            .into('login')
+            .returning('email')
+            .then((loginEmail: any) => {
+                return trx('users')
+                    .returning('*')
+                    .insert({
+                        email: loginEmail[0].email,
+                        name: name,
+                        joined: new Date()
+                    })
+                    .then((user: any) => {
+                        res.json(user[0]);
+                    });
+            })
+            .then(trx.commit)
+            .catch(trx.rollback);
+    }).catch((err: any) => res.status(400).json('unable to register'));
+});
 
-app.get('/profile/:id', profile.handleProfileGet(db));
+app.get('/profile/:id', (req: any, res: any) => {
+    const { id } = req.params;
+    db.select('*')
+        .from('users')
+        .where({ id })
+        .then((user: any) => {
+            if (user.length) {
+                res.json(user[0]);
+            } else {
+                res.status(400).json('not found');
+            }
+        })
+        .catch((err: any) => res.status(400).json('error getting user'));
+});
 
-app.put('/profile/:id', profile.handleProfilePut(db));
+app.put('/profile/:id', (req: any, res: any) => {
+    const { email, name } = req.body;
+    const { id } = req.params;
+    db('users')
+        .where({ id })
+        .update({
+            name: name,
+            email: email
+        })
+        .returning('*')
+        .then((user: any) => {
+            if (user.length) {
+                res.json(user[0]);
+            } else {
+                res.status(400).json('not found');
+            }
+        })
+        .catch((err: any) => res.status(400).json('error getting user'));
+});
