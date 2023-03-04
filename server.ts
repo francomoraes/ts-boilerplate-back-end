@@ -28,6 +28,11 @@ app.listen(PORT, () => {
     console.log(`app is running on port ${PORT}`);
 });
 
+app.get('/', (req: any, res: any) => {
+    console.log('backend is working');
+    res.send('backend is working');
+});
+
 app.post('/signin', signIn.handleSignIn(db, bcrypt));
 
 app.post('/register', register.handleRegister(db, bcrypt));
