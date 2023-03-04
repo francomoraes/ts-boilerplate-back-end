@@ -24,7 +24,7 @@ app.listen(PORT, () => {
     console.log(`app is running on port ${PORT}`);
 });
 
-app.get('/', (req: any, res: any) => {
+app.get('/', ({ req, res }: any) => {
     console.log('backend is working');
     res.send('backend is working');
 });
