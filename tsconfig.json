@@ -14,7 +14,7 @@
         "resolveJsonModule": true,
         "isolatedModules": false,
         "noEmit": true,
-        "jsx": "react-jsx"
+        "jsx": "react-jsx",
+        "outDir": "./dist"
     },
-    "include": ["**/*.ts", "**/*.tsx", "**/*.js", "**/*.jsx"]
 }
