@@ -4,10 +4,7 @@
     "description": "",
     "main": "script.js",
     "scripts": {
-        "format": "prettier --write src/**/*.{js,jsx,ts,tsx,json}",
-        "prepare": "husky install",
         "start": "node ./dist/server.js",
-        "prebuild": "tslint -c tslint.json -p tsconfig.json --fix",
         "build": "tsc"
     },
     "keywords": [],
