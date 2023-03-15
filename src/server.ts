@@ -9,7 +9,7 @@ const db = knex({
     connection: {
         hostname: 'dpg-cg3sm5ndvk4hn47amoo0-a.oregon-postgres.render.com',
         port: 5432,
-        maitenance_db: 'boilerplate_hind',
+        database: 'boilerplate_hind',
         username: 'francomoraes',
         password: 'QAo0Vj1yv5JF5Gy0h5XMBDvZumi4x4L4'
         // host: 'dpg-cg3sm5ndvk4hn47amoo0-a'
