@@ -7,7 +7,7 @@ const knex = require('knex');
 const db = knex({
     client: 'pg',
     connection: {
-        host: 'dpg-cg3sm5ndvk4hn47amoo0-a.oregon-postgres.render.com',
+        host: 'https://dpg-cg3sm5ndvk4hn47amoo0-a.oregon-postgres.render.com',
         port: 5432,
         database: 'boilerplate_hind',
         username: 'francomoraes',
