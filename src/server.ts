@@ -62,6 +62,7 @@ app.post('/register', (req: any, res: any) => {
     }
     const hash = bcrypt.hashSync(password);
     db.transaction((trx: any) => {
+        console.log('trx: ', trx);
         trx.insert({
             hash: hash,
             email: email
@@ -69,6 +70,7 @@ app.post('/register', (req: any, res: any) => {
             .into('login')
             .returning('email')
             .then((loginEmail: any) => {
+                console.log('loginEmail: ', loginEmail);
                 return trx('users')
                     .returning('*')
                     .insert({
@@ -77,6 +79,7 @@ app.post('/register', (req: any, res: any) => {
                         joined: new Date()
                     })
                     .then((user: any) => {
+                        console.log('user', user);
                         res.json(user[0]);
                     });
             })
