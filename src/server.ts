@@ -61,6 +61,8 @@ app.post('/register', (req: any, res: any) => {
         return res.status(400).json('incorrect form submission');
     }
     const hash = bcrypt.hashSync(password);
+    console.log('hash:', hash);
+    console.log('db:', db);
     db.transaction((trx: any) => {
         console.log('trx: ', trx);
         trx.insert({
