@@ -83,7 +83,7 @@ app.post('/register', (req: any, res: any) => {
             })
             .then(trx.commit)
             .catch(trx.rollback);
-    }).catch((err: any) => res.status(400).json('unable to register'));
+    }).catch((err: any) => res.status(400).json('unable to register', err));
 });
 
 app.get('/profile/:id', (req: any, res: any) => {
