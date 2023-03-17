@@ -61,8 +61,6 @@ app.post('/register', (req: any, res: any) => {
         return res.status(400).json('incorrect form submission');
     }
     const hash = bcrypt.hashSync(password);
-    console.log('hash:', hash);
-    console.log('db:', db);
     db.transaction((trx: any) => {
         console.log('trx: ', trx);
         trx.insert({
@@ -72,7 +70,6 @@ app.post('/register', (req: any, res: any) => {
             .into('login')
             .returning('email')
             .then((loginEmail: any) => {
-                console.log('loginEmail: ', loginEmail);
                 return trx('users')
                     .returning('*')
                     .insert({
@@ -81,7 +78,6 @@ app.post('/register', (req: any, res: any) => {
                         joined: new Date()
                     })
                     .then((user: any) => {
-                        console.log('user', user);
                         res.json(user[0]);
                     });
             })
